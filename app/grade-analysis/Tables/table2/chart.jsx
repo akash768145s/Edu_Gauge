@@ -1,15 +1,14 @@
-import React from 'react';
-import { Bar } from 'react-chartjs-2';
-import Chart from 'chart.js/auto'; // Import the Chart.js library
-import 'chartjs-adapter-date-fns'; // Import the date-fns adapter for Chart.js
-
+import React from "react";
+import { Bar } from "react-chartjs-2";
+import Chart from "chart.js/auto"; // Import the Chart.js library
+import "chartjs-adapter-date-fns"; // Import the date-fns adapter for Chart.js
 // Import the Chart.js scale service for the "category" scale
-import { CategoryScale } from 'chart.js';
+import { CategoryScale } from "chart.js";
 
 // Register the "category" scale service globally
 Chart.register(CategoryScale);
 
-const Bar = () => {
+const BarChart = () => {
   const chartData = {
     labels: [
       "9.0 GPA",
@@ -43,9 +42,7 @@ const Bar = () => {
     },
   };
 
-  return (
-    <Bar data={chartData} options={chartOptions} /> 
-  );
+  return <Bar data={chartData} options={chartOptions} />;
 };
 
-export default Bar;
+export default BarChart;
