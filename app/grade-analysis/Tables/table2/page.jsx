@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Navbar from "@/app/grade-analysis/Navbar";
 import Table2 from "@/app/grade-analysis/Tables/table2";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -20,6 +20,8 @@ const Table1Page = () => {
   const [rollNumberEnd, setRollNumberEnd] = useState("");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const chartRef = useRef(null);
 
   useEffect(() => {
     if (!user) {
@@ -59,7 +61,6 @@ const Table1Page = () => {
       setLoading(false); // Set loading to false after fetching and setting data
     }, 2000); // Set timeout for 2 seconds
   };
-  
 
   return (
     <>

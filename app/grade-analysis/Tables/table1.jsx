@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
 import {
     Table,
@@ -8,6 +8,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import LineGraph from './LineGraph';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const Table1 = ({ data }) => {
     const [loading, setLoading] = useState(true);
@@ -54,7 +57,7 @@ const Table1 = ({ data }) => {
                         totalCredits: 0,
                     };
                 }
-                
+
                 courseStats[CourseCode].appeared++;
                 courseStats[CourseCode].totalCredits += GradeCredit || 0;
                 courseStats[CourseCode].totalGradePoints += (Grade in gradePoints ? gradePoints[Grade] : 0) * (GradeCredit || 0);
@@ -84,37 +87,55 @@ const Table1 = ({ data }) => {
         }));
     };
 
+    const exportToExcel = () => {
+        const worksheet = XLSX.utils.json_to_sheet(statistics);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Statistics");
+        const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+        const data = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        saveAs(data, "statistics.xlsx");
+    };
+
     return (
         <div>
             {loading ? (
                 <p>Loading...</p>
             ) : (
-                <Table className="text-sm border-collapse border border-gray-200 w-full">
-                    <TableHeader>
-                        <TableRow className="bg-gray-100">
-                            <TableHead className="py-3 px-4">Subject Code</TableHead>
-                            <TableHead className="py-3 px-4">Subject Name</TableHead>
-                            <TableHead className="py-3 px-4">Appeared</TableHead>
-                            <TableHead className="py-3 px-4">Passed</TableHead>
-                            <TableHead className="py-3 px-4">Failed</TableHead>
-                            <TableHead className="py-3 px-4">Pass %</TableHead>
-                            <TableHead className="py-3 px-4">Avg GPA</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {statistics.map(stat => (
-                            <TableRow key={stat.CourseCode} className="bg-white">
-                                <TableCell className="py-3 px-4">{stat.CourseCode}</TableCell>
-                                <TableCell className="py-3 px-4">{stat.CourseTitle}</TableCell>
-                                <TableCell className="py-3 px-4">{stat.Appeared}</TableCell>
-                                <TableCell className="py-3 px-4">{stat.Passed}</TableCell>
-                                <TableCell className="py-3 px-4">{stat.Failed}</TableCell>
-                                <TableCell className="py-3 px-4">{stat.PassPercentage}</TableCell>
-                                <TableCell className="py-3 px-4">{stat.AvgGPA}</TableCell>
+                <>
+                    <button 
+                        onClick={exportToExcel} 
+                        className="mb-4 p-2 bg-blue-500 text-white rounded"
+                    >
+                        Download as Excel
+                    </button>
+                    <Table className="text-sm border-collapse border border-gray-200 w-full">
+                        <TableHeader>
+                            <TableRow className="bg-gray-100">
+                                <TableHead className="py-3 px-4">Subject Code</TableHead>
+                                <TableHead className="py-3 px-4">Subject Name</TableHead>
+                                <TableHead className="py-3 px-4">Appeared</TableHead>
+                                <TableHead className="py-3 px-4">Passed</TableHead>
+                                <TableHead className="py-3 px-4">Failed</TableHead>
+                                <TableHead className="py-3 px-4">Pass %</TableHead>
+                                <TableHead className="py-3 px-4">Avg GPA</TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHeader>
+                        <TableBody>
+                            {statistics.map(stat => (
+                                <TableRow key={stat.CourseCode} className="bg-white">
+                                    <TableCell className="py-3 px-4">{stat.CourseCode}</TableCell>
+                                    <TableCell className="py-3 px-4">{stat.CourseTitle}</TableCell>
+                                    <TableCell className="py-3 px-4">{stat.Appeared}</TableCell>
+                                    <TableCell className="py-3 px-4">{stat.Passed}</TableCell>
+                                    <TableCell className="py-3 px-4">{stat.Failed}</TableCell>
+                                    <TableCell className="py-3 px-4">{stat.PassPercentage}</TableCell>
+                                    <TableCell className="py-3 px-4">{stat.AvgGPA}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                    <LineGraph statistics={statistics} />
+                </>
             )}
         </div>
     );

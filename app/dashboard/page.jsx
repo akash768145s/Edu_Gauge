@@ -16,6 +16,7 @@ import { auth } from "@/components/firebase/firebase.js";
 import { useRouter } from "next/navigation";
 import { fetchData, fetchRollNumbers } from "@/app/dashboard/Fetch";
 import Spinner2 from "@/components/ui/spin2";
+import Home from "../../components/navbar/page";
 
 const GradebookPage = () => {
   const [user] = useAuthState(auth);
@@ -173,6 +174,11 @@ const GradebookPage = () => {
           <Spinner2 />
         </div>
       ) : (
+        <div className="flex h-screen bg-gray-100">
+          {/* Left side - Home */}
+          <div>
+            <Home />
+          </div>
         <div className="table-container">
           <Table>
             <TableCaption>
@@ -262,6 +268,7 @@ const GradebookPage = () => {
               </TableRow>
             </TableFooter>
           </Table>
+        </div>
         </div>
       )}
     </>
